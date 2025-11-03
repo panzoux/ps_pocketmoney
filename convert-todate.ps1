@@ -103,39 +103,66 @@
         return $candidates[0]
     }
 }
-<#
-Convert-ToDate 7        # 当月7日
-Convert-ToDate 45       # 4月5日
-Convert-ToDate 91       # 9月1日
-Convert-ToDate 105      # 1月5日
-Convert-ToDate 1225     # 12月25日
-Convert-ToDate 240105   # 2024年1月5日
-Convert-ToDate 20240105 # 2024年1月5日
-convert-todate 24927    # 2024年9月27日
-convert-todate 2492     # 2024年9月2日
-convert-todate 2412     # 2024年1月2日
-convert-todate 24130    # 2024年1月30日
-convert-todate 2498     # 2024年9月8日
-convert-todate 24098    # 2024年9月8日
-convert-todate 24123    # 2024年12月3日 2024.1.23
 
-Convert-ToDate 230230   # 存在しない日 → エラー
-#>
-
-Measure-Command{
-1..1000|%{
-Convert-ToDate 7        # 当月7日
-Convert-ToDate 45       # 4月5日
-Convert-ToDate 91       # 9月1日
-Convert-ToDate 105      # 1月5日
-Convert-ToDate 1225     # 12月25日
-Convert-ToDate 240105   # 2024年1月5日
-Convert-ToDate 20240105 # 2024年1月5日
-convert-todate 24927    # 2024年9月27日
-convert-todate 2492     # 2024年9月2日
-convert-todate 2412     # 2024年1月2日
-convert-todate 24130    # 2024年1月30日
-convert-todate 2498     # 2024年9月8日
-convert-todate 24098    # 2024年9月8日
+if ($MyInvocation.InvocationName -eq 'Convert-ToDate') {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$InputDate
+    )
+    try {
+        $resultDate = Convert-ToDate -InputDate $InputDate
+        Write-Output $resultDate.ToString("yyyy/MM/dd")
+    } catch {
+        Write-Error $_.Exception.Message
+        exit 1
+    }
 }
+elseif ($MyInvocation.PSCommandPath -eq $PSCommandPath) {
+    param(
+        [switch]$Benchmark
+    )
+
+    Write-Host "This script defines the Convert-ToDate function. To use it, call Convert-ToDate with a date string parameter."
+
+    if ($Benchmark) {
+        # Benchmark mode
+        Measure-Command{
+            1..1000|ForEach-Object{
+                Convert-ToDate 7        # 当月7日
+                Convert-ToDate 45       # 4月5日
+                Convert-ToDate 91       # 9月1日
+                Convert-ToDate 105      # 1月5日
+                Convert-ToDate 1225     # 12月25日
+                Convert-ToDate 240105   # 2024年1月5日
+                Convert-ToDate 20240105 # 2024年1月5日
+                convert-todate 24927    # 2024年9月27日
+                convert-todate 2492     # 2024年9月2日
+                convert-todate 2412     # 2024年1月2日
+                convert-todate 24130    # 2024年1月30日
+                convert-todate 2498     # 2024年9月8日
+                convert-todate 24098    # 2024年9月8日
+            }
+        }
+        exit 0
+    } else {
+        # Test cases
+        Convert-ToDate 7        # 当月7日
+        Convert-ToDate 45       # 4月5日
+        Convert-ToDate 91       # 9月1日
+        Convert-ToDate 105      # 1月5日
+        Convert-ToDate 1225     # 12月25日
+        Convert-ToDate 240105   # 2024年1月5日
+        Convert-ToDate 20240105 # 2024年1月5日
+        convert-todate 24927    # 2024年9月27日
+        convert-todate 2492     # 2024年9月2日
+        convert-todate 2412     # 2024年1月2日
+        convert-todate 24130    # 2024年1月30日
+        convert-todate 2498     # 2024年9月8日
+        convert-todate 24098    # 2024年9月8日
+        convert-todate 24123    # 2024年12月3日 2024.1.23
+
+        Convert-ToDate 230230   # 存在しない日 → エラー
+
+        exit 1
+    }
 }
