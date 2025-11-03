@@ -5,7 +5,8 @@
 # 日付変換は外部 convert-todate.ps1 の Convert-ToDate を使用
 # --------------------------------------------
 
-$csvFile = "$PSScriptRoot\kodukai.csv"
+$csvFile = join-path ([Environment]::GetFolderPath("MyDocuments")) 'kodukai.csv'
+write-host "データファイル: $csvFile"
 $data = New-Object System.Collections.ArrayList
 
 # 外部 Convert-ToDate 読み込み
